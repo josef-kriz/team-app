@@ -1,0 +1,19 @@
+<h3>Active players</h3>
+<mat-list>
+  <mat-list-item *ngFor="let player of activePlayers">
+    {{ player.name }}
+  </mat-list-item>
+  <button mat-stroked-button routerLink="/players">Edit players</button>
+</mat-list>
+<h3>Number of tables</h3>
+<div class="counter">
+  <span class="increment-button" (click)="changeNumberOfTables(-1)">-</span>{{ numberOfTables
+  }}<span class="increment-button" (click)="changeNumberOfTables(+1)">+</span>
+</div>
+<h3>Number of people per table</h3>
+<div class="counter">
+  <span class="increment-button" (click)="changeNumberPerTable(-1)">-</span>{{ numberPerTable
+  }}<span class="increment-button" (click)="changeNumberPerTable(+1)">+</span>
+</div>
+
+<button mat-raised-button (click)="startRound()">Start Round</button>
