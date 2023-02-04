@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
 import { GameService } from '../../game/game.service'
-import { map, Observable, reduce } from 'rxjs'
+import { map, Observable } from 'rxjs'
 import { Player } from '../../game/game.model'
 import { MatSnackBar } from '@angular/material/snack-bar'
 
@@ -22,7 +22,7 @@ export class PlayersPageComponent {
     return player.id!
   }
 
-  toggleActivness(player: Player) {
+  toggleActiveness(player: Player) {
     this.gameService.toggleActiveOnPlayer(player)
   }
 

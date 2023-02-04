@@ -53,6 +53,8 @@ export class GameService {
             first(),
             tap(a => console.log(a)),
             switchMap(async (players) => {
+              if(players.length < 1) throw new Error('At least one player has to be active.')
+              
               const shuffledPlayers = this.shuffleArray(players)
 
               const tables: Table[] = Array.from({ length: tablesCount }, (_, i) => [
@@ -76,9 +78,8 @@ export class GameService {
                 if (shuffledPlayers[i + 1]) tables[t][1].players.push(shuffledPlayers[i + 1])
               }
 
-              const round = { name: 'Round #1', tables, active: 1 }
-
-              console.log('?')
+              const round: Round = { name: 'Round #1', tables, active: 1 }
+              
               await db.rounds.add(round)
 
               return round

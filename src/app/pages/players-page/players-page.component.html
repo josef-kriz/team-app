@@ -1,50 +1,49 @@
-<mat-form-field class="example-full-width">
+<mat-form-field class="input">
   <mat-label>Name</mat-label>
   <input #nameInput matInput (keydown.enter)="addPlayer(nameInput)" />
 </mat-form-field>
 
-<button
-  mat-raised-button
-  color="primary"
-  [disabled]="!nameInput.value"
-  (click)="addPlayer(nameInput)"
->
+<button mat-raised-button color="primary" [disabled]="!nameInput.value" (click)="addPlayer(nameInput)">
   Add player
 </button>
 
-<h3>Active users</h3>
-<mat-list>
-  <mat-list-item
-    class="item"
-    *ngFor="let player of activePlayers$ | async; trackBy: trackById"
-    (click)="toggleActivness(player)"
-  >
-    <button
-      aria-label="Delete player"
-      mat-icon-button
-      (click)="deletePlayer(player)"
-      matListItemMeta
+<div class="section" *ngIf="activePlayers$ | async as activePlayers">
+  <h3>Active users</h3>
+  <mat-list *ngIf="activePlayers.length; else noPlayersActive">
+    <mat-list-item
+      class="item"
+      *ngFor="let player of activePlayers; trackBy: trackById"
+      (click)="toggleActiveness(player)"
     >
-      <mat-icon>delete</mat-icon>
-    </button>
-    <p>{{ player.name }}</p>
-  </mat-list-item>
-</mat-list>
-<h3>Inactive users</h3>
-<mat-list>
-  <mat-list-item
-    class="item"
-    *ngFor="let player of inactivePlayers$ | async; trackBy: trackById"
-    (click)="toggleActivness(player)"
-  >
-    <button
-      aria-label="Delete player"
-      mat-icon-button
-      (click)="deletePlayer(player)"
-      matListItemMeta
+      <button aria-label="Delete player" mat-icon-button (click)="deletePlayer(player)" matListItemMeta>
+        <mat-icon>delete</mat-icon>
+      </button>
+      <p>{{ player.name }}</p>
+    </mat-list-item>
+  </mat-list>
+  <ng-template #noPlayersActive>
+    <div>
+      <mat-card
+        ><mat-card-content
+          >No players are currently active! Please add some either by adding new ones or clicking on inactive ones
+          below.</mat-card-content
+        ></mat-card
+      >
+    </div>
+  </ng-template>
+</div>
+<div class="section" *ngIf="inactivePlayers$ | async as inactivePlayers">
+  <h3 *ngIf="inactivePlayers.length">Inactive users</h3>
+  <mat-list *ngIf="inactivePlayers.length">
+    <mat-list-item
+      class="item"
+      *ngFor="let inactivePlayer of inactivePlayers; trackBy: trackById"
+      (click)="toggleActiveness(inactivePlayer)"
     >
-      <mat-icon>delete</mat-icon>
-    </button>
-    <p>{{ player.name }}</p>
-  </mat-list-item>
-</mat-list>
+      <button aria-label="Delete player" mat-icon-button (click)="deletePlayer(inactivePlayer)" matListItemMeta>
+        <mat-icon>delete</mat-icon>
+      </button>
+      <p>{{ inactivePlayer.name }}</p>
+    </mat-list-item>
+  </mat-list>
+</div>

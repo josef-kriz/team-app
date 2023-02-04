@@ -1,5 +1,14 @@
-.increment-button{
-    padding: 10px;
-    background-color:red;
-    border-radius: 10000000px;
+.increment-button {
+  padding: 10px;
+  background-color: #69f0ae;
+  color: black;
+  border-radius: 10000000px;
+}
+
+.counter {
+  margin: 15px 0;
+}
+.increment-button {
+  margin: 0 5px;
+  padding: 10px;
 }

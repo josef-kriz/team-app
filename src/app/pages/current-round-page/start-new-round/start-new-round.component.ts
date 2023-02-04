@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core'
 import { GameService } from '../../../game/game.service'
 import { Subscription } from 'rxjs'
 import { Player } from '../../../game/game.model'
-import { FormGroup, FormControl } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 
 @Component({
@@ -38,7 +37,7 @@ export class StartNewRoundComponent implements OnInit {
   }
 
   startRound(): void {
-    this.gameService.startRound().subscribe(
+    this.gameService.startRound(this.numberPerTable, this.numberOfTables).subscribe(
       () => {
         this._snackBar.open('New round started!', undefined, {
           duration: 3000,

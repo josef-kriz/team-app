@@ -1,3 +1,7 @@
-.item{
-    background-color: gray;
+.item {
+  background-color: gray;
+}
+
+.input {
+  width: 100%;
 }
