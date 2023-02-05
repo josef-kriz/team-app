@@ -16,8 +16,9 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatDialogModule } from '@angular/material/dialog';
 import { StartNewRoundComponent } from './pages/current-round-page/start-new-round/start-new-round.component';
 import { ResultInputComponent } from './pages/current-round-page/result-input/result-input.component'
-import { MatListModule } from '@angular/material/list'
-import { MatCardModule } from '@angular/material/card'
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { ReorderTeamsComponent } from './pages/current-round-page/result-input/reorder-teams/reorder-teams.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { MatCardModule } from '@angular/material/card'
     StatsPageComponent,
     StartNewRoundComponent,
     ResultInputComponent,
+    ReorderTeamsComponent,
   ],
   imports: [
     BrowserModule,

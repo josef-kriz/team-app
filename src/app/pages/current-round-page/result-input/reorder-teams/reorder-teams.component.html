@@ -1,0 +1,21 @@
+<div class="container">
+  <div *ngIf="round; else error">
+    <div class="table" *ngFor="let table of round.tables">
+      <h2>{{ 'Table ' + table.id }}</h2>
+      <div class="teams">
+        <div class="team" *ngFor="let team of table.teams">
+          <h3>{{ 'Team ' + team.id }}</h3>
+          <mat-list>
+            <mat-list-item
+              [style]="{ background: selectedPlayer?.id! === player.id! ? 'green' : '' }"
+              *ngFor="let player of team.players"
+              (click)="selectPlayer(player)"
+              >{{ player.name }}</mat-list-item
+            >
+          </mat-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #error><div>Error: No round was passed!</div></ng-template>

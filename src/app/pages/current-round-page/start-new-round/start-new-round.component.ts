@@ -13,26 +13,40 @@ export class StartNewRoundComponent implements OnInit {
   constructor(private _snackBar: MatSnackBar, private gameService: GameService) {}
   subscriptions: Subscription[] = []
   activePlayers: Player[] = []
-  numberOfTables: number = 1
-  numberPerTable: number = 1
+  numberOfTables = {value:1, plusDisabled:false}
+  maxNumberPerTeam = {value:1, plusDisabled:false}
 
   ngOnInit() {
     this.subscriptions.push(
       this.gameService.getActivePlayers().subscribe((players) => {
         this.activePlayers = players
+        this.checkIfIncrementButtonsShouldBeDisabled()
       })
     )
   }
 
   changeNumberOfTables(number: number) {
-    if (this.numberOfTables + number > 0) {
-      this.numberOfTables += number
+    if (this.numberOfTables.value + number > 0) {
+      this.numberOfTables.value += number
     }
+    this.checkIfIncrementButtonsShouldBeDisabled()
   }
 
   changeNumberPerTable(number: number) {
-    if (this.numberPerTable + number > 0) {
-      this.numberPerTable += number
+    if (this.maxNumberPerTeam.value + number > 0) {
+      this.maxNumberPerTeam.value += number
+    }
+    this.checkIfIncrementButtonsShouldBeDisabled()
+  }
+  
+  checkIfIncrementButtonsShouldBeDisabled(){
+    const possiblePlayers = (this.maxNumberPerTeam.value *2 ) * this.numberOfTables.value
+    if((possiblePlayers)>=this.activePlayers.length){
+      this.maxNumberPerTeam.plusDisabled = true
+      this.numberOfTables.plusDisabled = true
+    } else {
+      this.maxNumberPerTeam.plusDisabled = false
+      this.numberOfTables.plusDisabled = false
     }
   }
 

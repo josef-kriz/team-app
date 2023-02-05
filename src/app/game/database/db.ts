@@ -8,9 +8,9 @@ export class AppDB extends Dexie {
   constructor() {
     super('team-app-db')
 
-    this.version(1).stores({
+    this.version(3).stores({
       players: '++id, name',
-      rounds: '++id',
+      rounds: '++id, active',
     })
   }
 }

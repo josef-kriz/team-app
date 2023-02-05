@@ -1,1 +1,37 @@
-<p>result-input works!</p>
+<div *ngIf="round">
+  <mat-card *ngFor="let table of round.tables; let i = index; trackBy: trackById">
+    <mat-card-header class="card-header"
+      ><h2>{{ 'Table ' + (i + 1) }}</h2></mat-card-header
+    >
+    <mat-card-content>
+      <div class="result-inputs">
+        <mat-form-field>
+          <input
+            matInput
+            #inputOne
+            type="number"
+            (input)="changeScore(table.id, inputOne.value, inputTwo.value)"
+            [value]="$any(table.teams[0].score)" /></mat-form-field
+        ><mat-form-field
+          ><input
+            matInput
+            #inputTwo
+            type="number"
+            (input)="changeScore(table.id, inputOne.value, inputTwo.value)"
+            [value]="$any(table.teams[1].score)"
+        /></mat-form-field>
+      </div>
+      <div class="teamMembers">
+        <div class="team">
+          <div class="member" *ngFor="let player of table.teams[0].players">{{ player.name }}</div>
+        </div>
+        <div class="versus">vs.</div>
+        <div class="team right">
+          <div class="member" *ngFor="let player of table.teams[1].players">{{ player.name }}</div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<button *ngIf="round" mat-raised-button color="accent" (click)="openReorderTeamsModal(round)">Reorder players</button>

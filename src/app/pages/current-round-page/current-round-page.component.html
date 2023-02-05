@@ -1,3 +1,17 @@
-<div *ngIf="!currentRound">
-  <app-start-new-round></app-start-new-round>
-</div>
+<app-start-new-round *ngIf="!currentRound; else resultInput"></app-start-new-round>
+<ng-template #resultInput>
+  <app-result-input [round]="currentRound"></app-result-input>
+</ng-template>
+
+<button mat-raised-button color="accent" (click)="endRound()">End round</button>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!--TODO: Add an are you sure popup -->
+<button mat-raised-button color="warn" (click)="deleteAllRounds()">Delete all rounds</button>
+

@@ -1,0 +1,37 @@
+.teamMembers{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.card-header{
+    padding-bottom: 15px;
+}
+
+.versus{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+}
+
+.team{
+    min-width: 150px;
+}
+
+.team.right{
+    text-align: right;
+}
+
+.result-inputs{
+    display: flex;
+    justify-content: space-between;
+}
+
+.result-inputs mat-form-field{
+    max-width: 40%;
+}
+mat-card {
+    margin-bottom: 15px;
+}

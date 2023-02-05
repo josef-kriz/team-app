@@ -6,7 +6,7 @@
 <button mat-raised-button color="primary" [disabled]="!nameInput.value" (click)="addPlayer(nameInput)">
   Add player
 </button>
-
+<br>
 <div class="section" *ngIf="activePlayers$ | async as activePlayers">
   <h3>Active users</h3>
   <mat-list *ngIf="activePlayers.length; else noPlayersActive">

@@ -1,0 +1,10 @@
+.container {
+  padding: 15px;
+}
+
+.teams {
+  display: flex;
+  flex-direction: row;
+}
+
+
