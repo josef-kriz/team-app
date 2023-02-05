@@ -51,17 +51,16 @@ export class StartNewRoundComponent implements OnInit {
   }
 
   startRound(): void {
-    this.gameService.startRound(this.numberPerTable, this.numberOfTables).subscribe(
-      () => {
+    this.gameService.startRound().subscribe({
+      next: () => {
         this._snackBar.open('New round started!', undefined, {
           duration: 3000,
         })
       },
-      (error) =>
+      error: (error) =>
         this._snackBar.open(error.message, undefined, {
           duration: 3000,
-        })
-    )
+        }),
+    })
   }
-
 }
