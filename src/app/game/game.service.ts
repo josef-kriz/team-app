@@ -49,10 +49,6 @@ export class GameService {
     return from(db.rounds.clear())
   }
 
-  getLastRound(): Observable<Round | undefined> {
-    return conditionalLiveQuery(() => db.rounds.toCollection().last())
-  }
-
   startRound(playersPerTeam: number = 2, tablesCount: number = 2): Observable<Round> {
     return from(
       db.transaction('rw', db.players, db.rounds, () =>
@@ -93,7 +89,9 @@ export class GameService {
                 if (shuffledPlayers[i + 1]) tables[t].teams[1].players.push(shuffledPlayers[i + 1])
               }
 
-              const round: Round = { name: 'Round #1', tables, active: 1 }
+              const roundsCount = await db.rounds.count()
+
+              const round: Round = { name: `Round #${roundsCount + 1}`, tables, active: 1 }
 
               await db.rounds.add(round)
 
@@ -117,33 +115,47 @@ export class GameService {
             switchMap((round) => {
               if (!round) throw new Error('Cannot swap players, there is no active round')
 
-              let playerA
-              for (const table of round.tables) {
-                for (const team of table.teams) {
-                  playerA = team.players.find((player) => player.id === playerAId)
-                  if (playerA) break
-                }
-                if (playerA) break
-              }
-              console.log(playerA?.name, round.tables[0].teams[0].players[0].name)
+              let playerA, playerATable: number, playerATeam: number, playerAIndex: number
+              round.tables.some((table, i) =>
+                table.teams.some((team, j) =>
+                  team.players.some((player, k) => {
+                    if (player.id === playerAId) {
+                      playerA = player
+                      playerATable = i
+                      playerATeam = j
+                      playerAIndex = k
+                      return true
+                    }
+                    return false
+                  })
+                )
+              )
 
-              let playerB
-              for (const table of round.tables) {
-                for (const team of table.teams) {
-                  playerB = team.players.find((player) => player.id === playerBId)
-                  if (playerB) break
-                }
-                if (playerB) break
-              }
+              let playerB, playerBTable: number, playerBTeam: number, playerBIndex: number
+              round.tables.some((table, i) =>
+                table.teams.some((team, j) =>
+                  team.players.some((player, k) => {
+                    if (player.id === playerBId) {
+                      playerB = player
+                      playerBTable = i
+                      playerBTeam = j
+                      playerBIndex = k
+                      return true
+                    }
+                    return false
+                  })
+                )
+              )
 
               if (!playerA || !playerB) throw new Error('Cannot swap players, player(s) not found')
 
-              let tmp = playerA
-              playerA = playerB
-              playerB = tmp
-              // ;[playerA, playerB] = [playerB, playerA]
-              console.log(playerA.name, round.tables[0].teams[0].players[0].name) // TODO
-              console.log(round)
+              ;[
+                round.tables[playerATable!].teams[playerATeam!].players[playerAIndex!],
+                round.tables[playerBTable!].teams[playerBTeam!].players[playerBIndex!],
+              ] = [
+                round.tables[playerBTable!].teams[playerBTeam!].players[playerBIndex!],
+                round.tables[playerATable!].teams[playerATeam!].players[playerAIndex!],
+              ]
 
               return from(db.rounds.update(round, round))
             })
