@@ -1,6 +1,14 @@
 <div id="app-wrapper">
   <mat-toolbar>
     <span>Team app</span>
+    <span class="spacer"></span>
+    <button mat-icon-button  aria-label="settings" [matMenuTriggerFor]="menu">
+      <mat-icon>settings</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="deleteAllRounds()">Delete All Rounds (Be careful!)</button>
+      <button mat-menu-item *ngIf="activeRound$ | async as activeRound" (click)="openReorderTeamsModal(activeRound)">Reorder Players</button>
+    </mat-menu>
   </mat-toolbar>
   <mat-tab-nav-panel class="current-page-wrapper">
     <router-outlet></router-outlet>

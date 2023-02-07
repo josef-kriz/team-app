@@ -24,6 +24,7 @@ import { PlotlyModule } from 'angular-plotly.js'
 import * as PlotlyJS from 'plotly.js-dist-min'
 
 PlotlyModule.plotlyjs = PlotlyJS;
+import {MatMenuModule} from "@angular/material/menu";
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     MatListModule,
     MatCardModule,
     MatSortModule,
-    PlotlyModule
+    PlotlyModule,
+    MatMenuModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

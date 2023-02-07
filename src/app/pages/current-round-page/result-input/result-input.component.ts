@@ -1,8 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core'
 import { Round, Table } from '../../../game/game.model'
 import { GameService } from '../../../game/game.service'
-import {MatDialog} from '@angular/material/dialog'
-import { ReorderTeamsComponent } from './reorder-teams/reorder-teams.component'
 
 @Component({
   selector: 'app-result-input',
@@ -11,7 +9,7 @@ import { ReorderTeamsComponent } from './reorder-teams/reorder-teams.component'
 })
 export class ResultInputComponent implements OnInit {
   @Input() round?: Round
-  constructor(private gameService: GameService, public dialog: MatDialog) {}
+  constructor(private gameService: GameService) {}
 
   ngOnInit() {}
 
@@ -21,16 +19,5 @@ export class ResultInputComponent implements OnInit {
 
   trackById(_: number, table: Table): number {
     return table.id
-  }
-
-  openReorderTeamsModal(currentRound: Round) {
-    const dialogRef = this.dialog.open(ReorderTeamsComponent, {
-      data: currentRound,
-    })
-
-    dialogRef.afterClosed().subscribe((result) => {
-      console.log('The dialog was closed')
-      console.log(result)
-    })
   }
 }

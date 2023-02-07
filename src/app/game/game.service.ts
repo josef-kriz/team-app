@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { db } from './database/db'
-import { firstValueFrom, from, Observable, switchMap, tap, throwError } from 'rxjs'
+import {firstValueFrom, from, map, Observable, switchMap, tap, throwError} from 'rxjs'
 import { Player, Round, RoundState, Scores, Table } from './game.model'
 import { conditionalLiveQuery } from '../helpers/functions'
 import { PlayerService } from './player.service'
@@ -47,12 +47,17 @@ export class GameService {
                 ],
               }))
 
+              const whoPlayedWithWho = this.getWhoWasInATeamWithWhoHowManyTimes(players)
+
               for (let i = 0, t = 0; i < shuffledPlayers.length; i += 2, t++) {
                 if (t === tablesCount) t = 0
 
-                tables[t].teams[0].players.push(shuffledPlayers[i])
+                const playerOne = shuffledPlayers[i]
+                const playerTwo = shuffledPlayers[i + 1]
 
-                if (shuffledPlayers[i + 1]) tables[t].teams[1].players.push(shuffledPlayers[i + 1])
+                tables[t].teams[0].players.push(playerOne)
+
+                if (shuffledPlayers[i + 1]) tables[t].teams[1].players.push(playerTwo)
               }
 
               const roundsCount = await db.rounds.count()
@@ -114,7 +119,6 @@ export class GameService {
               )
 
               if (!playerA || !playerB) throw new Error('Cannot swap players, player(s) not found')
-
               ;[
                 round.tables[playerATable!].teams[playerATeam!].players[playerAIndex!],
                 round.tables[playerBTable!].teams[playerBTeam!].players[playerBIndex!],
@@ -193,6 +197,59 @@ export class GameService {
           )
         )
       )
+    )
+  }
+
+  getRounds() {
+    return conditionalLiveQuery(() => db.rounds.toArray())
+  }
+  
+  getWhoWasInATeamWithWhoHowManyTimes(players:Player[]) {
+    const playersAndWhoTheyHavePlayedWith: { [name1: string]: { [playedWith: string]: number } } = {}
+    
+    return this.getRounds().pipe(
+      map(rounds => {
+        players.forEach(player=>{
+          playersAndWhoTheyHavePlayedWith[player.name] = {}
+        })
+        
+        players.forEach((player)=>{
+          players.forEach((teamMate)=>{
+            if(player.id !== teamMate.id){
+              playersAndWhoTheyHavePlayedWith[player.name][teamMate.name] = 0
+            }
+          })
+        })
+        
+        rounds.forEach((round) => {
+          round.tables.forEach((table) => {
+            table.teams.forEach((team) => {
+              team.players.forEach(player=>{
+                team.players.forEach(teamMate=>{
+                  if(teamMate.id !== player.id){
+                    playersAndWhoTheyHavePlayedWith[player.name][teamMate.name]++
+                  }
+                })
+              })
+            })
+            const teamOne = table.teams[0]
+            const teamTwo = table.teams[1]
+            teamOne.players.forEach(member=>{
+              teamTwo.players.forEach(rival=>{
+                playersAndWhoTheyHavePlayedWith[member.name][rival.name] += 0.5
+              })
+            })
+            teamTwo.players.forEach(member=>{
+              teamOne.players.forEach(rival=>{
+                playersAndWhoTheyHavePlayedWith[member.name][rival.name] += 0.5
+              })
+            })
+          })
+        })
+        
+        console.log(playersAndWhoTheyHavePlayedWith)
+        return playersAndWhoTheyHavePlayedWith
+      })
     )
   }
 
