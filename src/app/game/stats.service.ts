@@ -62,8 +62,6 @@ export class StatsService {
         return rounds.reduce((acc, round, i) => {
           if (round.scores) {
             Object.entries(round.scores).forEach(([playerId, playerStats]) => {
-              if (!acc[playerId]) return
-
               const score = Object.values(playerStats)[0]
 
               if (acc[playerId].x.length) {
