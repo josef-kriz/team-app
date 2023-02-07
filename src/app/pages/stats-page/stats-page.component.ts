@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { StatsService } from '../../game/stats.service'
 import { PlayerStats } from '../../game/game.model'
 import { SortDirection } from '@angular/material/sort'
+import { Plotly } from 'angular-plotly.js/lib/plotly.interface'
 
 @Component({
   selector: 'app-stats-page',
@@ -12,19 +13,30 @@ export class StatsPageComponent implements OnInit {
   playerStats?: PlayerStats[]
 
   graph = {
-    data: [{
-      x: [2, 3, 4, 5],
-      y: [16, 5, 11, 9],
-      mode: 'lines',
-      line: {
-        color: 'rgb(55, 128, 191)',
-        width: 3
+    data: [] as Plotly.Data[],
+    layout: {
+      autosize: true,
+      plot_bgcolor: 'transparent',
+      paper_bgcolor: 'transparent',
+      title: 'Total wins',
+      xaxis: {
+        title: 'Round #',
+        gridcolor: 'rgba(255,255,255,0.2)',
+        dtick: 1
+      },
+      yaxis: {
+        title: 'Wins',
+        gridcolor: 'rgba(255,255,255,0.2)',
+        dtick: 1
+      },
+      font: {
+        color: '#ffffffC3'
       }
-    }],
-    layout: {autosize: true, title: 'A Fancy Plot'},
+    },
   }
 
   constructor(private statsService: StatsService) {
+    this.statsService.getPlotData().subscribe((plotData) => (this.graph.data = plotData))
   }
 
   ngOnInit() {
