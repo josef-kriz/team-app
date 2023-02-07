@@ -16,3 +16,7 @@ nav[mat-tab-nav-bar]{
     width: 100%;
     z-index: 5;
 }
+
+.spacer {
+    flex: 1 1 auto;
+}

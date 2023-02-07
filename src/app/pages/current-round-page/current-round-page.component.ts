@@ -36,18 +36,4 @@ export class CurrentRoundPageComponent implements OnInit {
         }),
     })
   }
-  
-  deleteAllRounds(): void {
-    this.gameService.deleteAllRounds().subscribe({
-      next: () => {
-        this._snackBar.open('Rounds deleted', undefined, {
-          duration: 3000,
-        })
-      },
-      error: (error) =>
-        this._snackBar.open(error.message, undefined, {
-          duration: 3000,
-        }),
-    })
-  }
 }
