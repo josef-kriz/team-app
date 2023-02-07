@@ -1,49 +1,15 @@
 import { Injectable } from '@angular/core'
 import { db } from './database/db'
-import { firstValueFrom, from, map, Observable, switchMap, tap, throwError } from 'rxjs'
+import { firstValueFrom, from, Observable, switchMap, tap, throwError } from 'rxjs'
 import { Player, Round, RoundState, Scores, Table } from './game.model'
 import { conditionalLiveQuery } from '../helpers/functions'
+import { PlayerService } from './player.service'
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameService {
-  constructor() {}
-
-  getPlayers(): Observable<Player[]> {
-    return conditionalLiveQuery(() => db.players.orderBy('name').toArray())
-  }
-
-  getActivePlayers(): Observable<Player[]> {
-    return this.getPlayers().pipe(map((players) => players.filter((player) => player.active)))
-  }
-
-  toggleActiveOnPlayer(player: Player): Observable<number> {
-    player.active = player.active === 1 ? 0 : 1
-    return this.updatePlayer(player)
-  }
-
-  addPlayer(name: string): Observable<number> {
-    const trimmedName = name.trim()
-
-    return from(
-      db.transaction('rw', db.players, async () => {
-        const existingPlayer = await db.players.where('name').equalsIgnoreCase(trimmedName).first()
-
-        if (existingPlayer) throw new Error('A player with this name already exists')
-
-        return db.players.add({ active: 1, name: trimmedName })
-      })
-    )
-  }
-
-  updatePlayer(player: Player): Observable<number> {
-    return from(db.players.update(player, player))
-  }
-
-  deletePlayer(id: number): Observable<void> {
-    return from(db.players.delete(id))
-  }
+  constructor(private playerService: PlayerService) {}
 
   deleteAllRounds(): Observable<void> {
     return from(db.rounds.clear())
@@ -57,7 +23,7 @@ export class GameService {
             tap((activeRound) => {
               if (activeRound) throw new Error('Cannot start a new round while the previous one is still active')
             }),
-            switchMap(() => this.getActivePlayers()),
+            switchMap(() => this.playerService.getActivePlayers()),
             switchMap(async (players) => {
               if (players.length < 1) throw new Error('At least one player has to be active.')
 

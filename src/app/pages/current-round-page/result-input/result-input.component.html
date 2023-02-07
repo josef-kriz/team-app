@@ -10,6 +10,7 @@
             matInput
             #inputOne
             type="number"
+            min="0"
             (input)="changeScore(table.id, inputOne.value, inputTwo.value)"
             [value]="$any(table.teams[0].score)" /></mat-form-field
         ><mat-form-field
@@ -17,6 +18,7 @@
             matInput
             #inputTwo
             type="number"
+            min="0"
             (input)="changeScore(table.id, inputOne.value, inputTwo.value)"
             [value]="$any(table.teams[1].score)"
         /></mat-form-field>

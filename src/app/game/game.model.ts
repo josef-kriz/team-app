@@ -35,3 +35,8 @@ export interface PlayerScore {
   score: number
   wins: number
 }
+
+export interface PlayerStats extends PlayerScore {
+  player: Player
+  relativeScore: number
+}

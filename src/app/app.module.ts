@@ -19,6 +19,11 @@ import { ResultInputComponent } from './pages/current-round-page/result-input/re
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { ReorderTeamsComponent } from './pages/current-round-page/result-input/reorder-teams/reorder-teams.component';
+import { MatSortModule } from '@angular/material/sort'
+import { PlotlyModule } from 'angular-plotly.js'
+import * as PlotlyJS from 'plotly.js-dist-min'
+
+PlotlyModule.plotlyjs = PlotlyJS;
 
 @NgModule({
   declarations: [
@@ -43,6 +48,8 @@ import { ReorderTeamsComponent } from './pages/current-round-page/result-input/r
     MatDialogModule,
     MatListModule,
     MatCardModule,
+    MatSortModule,
+    PlotlyModule
   ],
   providers: [],
   bootstrap: [AppComponent],

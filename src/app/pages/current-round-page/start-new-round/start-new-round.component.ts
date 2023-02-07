@@ -3,6 +3,7 @@ import { GameService } from '../../../game/game.service'
 import { Subscription } from 'rxjs'
 import { Player } from '../../../game/game.model'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { PlayerService } from '../../../game/player.service'
 
 @Component({
   selector: 'app-start-new-round',
@@ -10,15 +11,16 @@ import { MatSnackBar } from '@angular/material/snack-bar'
   styleUrls: ['./start-new-round.component.css'],
 })
 export class StartNewRoundComponent implements OnInit {
-  constructor(private _snackBar: MatSnackBar, private gameService: GameService) {}
+  constructor(private _snackBar: MatSnackBar, private gameService: GameService, private playerService: PlayerService) {}
+
   subscriptions: Subscription[] = []
   activePlayers: Player[] = []
-  numberOfTables = {value:1, plusDisabled:false}
-  maxNumberPerTeam = {value:1, plusDisabled:false}
+  numberOfTables = { value: 1, plusDisabled: false }
+  maxNumberPerTeam = { value: 1, plusDisabled: false }
 
   ngOnInit() {
     this.subscriptions.push(
-      this.gameService.getActivePlayers().subscribe((players) => {
+      this.playerService.getActivePlayers().subscribe((players) => {
         this.activePlayers = players
         this.checkIfIncrementButtonsShouldBeDisabled()
       })
@@ -38,10 +40,10 @@ export class StartNewRoundComponent implements OnInit {
     }
     this.checkIfIncrementButtonsShouldBeDisabled()
   }
-  
-  checkIfIncrementButtonsShouldBeDisabled(){
-    const possiblePlayers = (this.maxNumberPerTeam.value *2 ) * this.numberOfTables.value
-    if((possiblePlayers)>=this.activePlayers.length){
+
+  checkIfIncrementButtonsShouldBeDisabled() {
+    const possiblePlayers = this.maxNumberPerTeam.value * 2 * this.numberOfTables.value
+    if (possiblePlayers >= this.activePlayers.length) {
       this.maxNumberPerTeam.plusDisabled = true
       this.numberOfTables.plusDisabled = true
     } else {
@@ -51,7 +53,7 @@ export class StartNewRoundComponent implements OnInit {
   }
 
   startRound(): void {
-    this.gameService.startRound().subscribe({
+    this.gameService.startRound(this.maxNumberPerTeam.value, this.numberOfTables.value).subscribe({
       next: () => {
         this._snackBar.open('New round started!', undefined, {
           duration: 3000,

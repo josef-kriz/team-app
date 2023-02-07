@@ -1,1 +1,25 @@
-<p>stats-page works!</p>
+<table matSort (matSortChange)="sortData($event.active, $event.direction)">
+  <thead>
+    <th mat-sort-header="name">Player</th>
+    <th mat-sort-header="wins">Wins</th>
+    <th mat-sort-header="score">Score</th>
+    <th mat-sort-header="relative-score">Relative score</th>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let playerStat of playerStats; index as i">
+      <td>
+        {{ playerStat.player.name }}
+        <span *ngIf="i === 0"> 🥇</span>
+        <span *ngIf="i === 1"> 🥈</span>
+        <span *ngIf="i === 2"> 🥉</span>
+        <span *ngIf="(i + 1 === playerStats?.length && playerStats?.length) || 0 > 2"> 🦙</span>
+      </td>
+      <td>{{ playerStat.wins }}</td>
+      <td>{{ playerStat.score }}</td>
+      <td>{{ playerStat.relativeScore }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<plotly-plot [data]="graph.data" [layout]="graph.layout" [useResizeHandler]="true" divId="plot"> </plotly-plot>

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core'
-import { GameService } from '../../game/game.service'
 import { map, Observable } from 'rxjs'
 import { Player } from '../../game/game.model'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { PlayerService } from '../../game/player.service'
 
 @Component({
   selector: 'app-players-page',
@@ -13,9 +13,9 @@ export class PlayersPageComponent {
   readonly activePlayers$: Observable<Player[]>
   readonly inactivePlayers$: Observable<Player[]>
 
-  constructor(private _snackBar: MatSnackBar, private gameService: GameService) {
-    this.activePlayers$ = this.gameService.getPlayers().pipe(map((player) => player.filter((p) => !!p.active)))
-    this.inactivePlayers$ = this.gameService.getPlayers().pipe(map((player) => player.filter((p) => !p.active)))
+  constructor(private _snackBar: MatSnackBar, private playerService: PlayerService) {
+    this.activePlayers$ = this.playerService.getPlayers().pipe(map((player) => player.filter((p) => !!p.active)))
+    this.inactivePlayers$ = this.playerService.getPlayers().pipe(map((player) => player.filter((p) => !p.active)))
   }
 
   trackById(_: number, player: Player): number {
@@ -23,35 +23,35 @@ export class PlayersPageComponent {
   }
 
   toggleActiveness(player: Player) {
-    this.gameService.toggleActiveOnPlayer(player)
+    this.playerService.toggleActiveOnPlayer(player)
   }
 
   addPlayer(nameField: HTMLInputElement): void {
-    this.gameService.addPlayer(nameField.value).subscribe(
-      () => {
+    this.playerService.addPlayer(nameField.value).subscribe({
+      next: () => {
         nameField.value = ''
         this._snackBar.open('Player added', undefined, {
           duration: 3000,
         })
       },
-      (error) =>
+      error: (error) =>
         this._snackBar.open(error.message, undefined, {
           duration: 3000,
-        })
-    )
+        }),
+    })
   }
 
   deletePlayer(player: Player): void {
-    this.gameService.deletePlayer(player.id!).subscribe(
-      () => {
+    this.playerService.deletePlayer(player.id!).subscribe({
+      next: () => {
         this._snackBar.open('Player deleted', undefined, {
           duration: 3000,
         })
       },
-      (error) =>
+      error: (error) =>
         this._snackBar.open(error.message, undefined, {
           duration: 3000,
-        })
-    )
+        }),
+    })
   }
 }

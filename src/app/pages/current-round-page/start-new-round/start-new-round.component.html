@@ -5,13 +5,17 @@
   </mat-list-item>
   <button mat-stroked-button routerLink="/players">Edit players</button>
 </mat-list>
+
 <h3>Number of Tables</h3>
+
 <div class="counter">
   <button mat-stroked-button class="increment-button" [disabled]="numberOfTables.value<=1" (click)="changeNumberOfTables(-1)">-</button
   >{{ numberOfTables.value
   }}<button mat-stroked-button class="increment-button" [disabled]="numberOfTables.plusDisabled" (click)="changeNumberOfTables(+1)">+</button>
 </div>
+
 <h3>Maximum Number of Players per Team</h3>
+
 <div class="counter">
   <button mat-stroked-button class="increment-button" [disabled]="maxNumberPerTeam.value<=1" (click)="changeNumberPerTable(-1)">-</button
   >{{ maxNumberPerTeam.value
