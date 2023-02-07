@@ -50,9 +50,20 @@ export class GameService {
               for (let i = 0, t = 0; i < shuffledPlayers.length; i += 2, t++) {
                 if (t === tablesCount) t = 0
 
-                tables[t].teams[0].players.push(shuffledPlayers[i])
+                // if this is the last player
+                if (!shuffledPlayers[i + 1]) {
+                  // if the last player would be the only one at the table
+                  if (tables[t].teams[0].players.length === 0) {
+                    tables.splice(t, 1)
+                    // if there is still room for a player at the previous table
+                    if (t > 1 && tables[t - 1].teams[1].players.length < playersPerTeam)
+                      tables[t - 1].teams[1].players.push(shuffledPlayers[i])
+                  }
+                  continue
+                }
 
-                if (shuffledPlayers[i + 1]) tables[t].teams[1].players.push(shuffledPlayers[i + 1])
+                tables[t].teams[0].players.push(shuffledPlayers[i])
+                tables[t].teams[1].players.push(shuffledPlayers[i + 1])
               }
 
               const roundsCount = await db.rounds.count()
@@ -114,7 +125,6 @@ export class GameService {
               )
 
               if (!playerA || !playerB) throw new Error('Cannot swap players, player(s) not found')
-
               ;[
                 round.tables[playerATable!].teams[playerATeam!].players[playerAIndex!],
                 round.tables[playerBTable!].teams[playerBTeam!].players[playerBIndex!],
