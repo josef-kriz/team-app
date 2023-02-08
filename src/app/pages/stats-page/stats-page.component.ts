@@ -3,6 +3,7 @@ import { StatsService } from '../../game/stats.service'
 import { PlayerStats } from '../../game/game.model'
 import { SortDirection } from '@angular/material/sort'
 import { Plotly } from 'angular-plotly.js/lib/plotly.interface'
+import { Observable } from 'rxjs'
 
 @Component({
   selector: 'app-stats-page',
@@ -12,31 +13,51 @@ import { Plotly } from 'angular-plotly.js/lib/plotly.interface'
 export class StatsPageComponent implements OnInit {
   playerStats?: PlayerStats[]
 
-  graph = {
-    data: [] as Plotly.Data[],
-    layout: {
-      autosize: true,
-      plot_bgcolor: 'transparent',
-      paper_bgcolor: 'transparent',
-      title: 'Total wins',
-      xaxis: {
-        title: 'Round #',
-        gridcolor: 'rgba(255,255,255,0.2)',
-        dtick: 1
-      },
-      yaxis: {
-        title: 'Wins',
-        gridcolor: 'rgba(255,255,255,0.2)',
-        dtick: 1
-      },
-      font: {
-        color: '#ffffffC3'
-      }
+  winsData$: Observable<Plotly.Data>
+  scoreData$: Observable<Plotly.Data>
+
+  winsPlotLayout
+  scorePlotLayout
+
+  private plotLayoutBase = {
+    autosize: true,
+    plot_bgcolor: 'transparent',
+    paper_bgcolor: 'transparent',
+    xaxis: {
+      title: 'Round #',
+      gridcolor: 'rgba(255,255,255,0.2)',
+      dtick: 1,
+    },
+    yaxis: {
+      gridcolor: 'rgba(255,255,255,0.2)',
+      dtick: 1,
+    },
+    font: {
+      color: '#ffffffC3',
     },
   }
 
+
+
   constructor(private statsService: StatsService) {
-    this.statsService.getPlotData().subscribe((plotData) => (this.graph.data = plotData))
+    this.winsData$ = this.statsService.getPlotData('wins')
+    this.scoreData$ = this.statsService.getPlotData('score')
+    this.winsPlotLayout = {
+      ...this.plotLayoutBase,
+      title: 'Wins',
+      yaxis: {
+        ...this.plotLayoutBase.yaxis,
+        title: 'Wins'
+      }
+    }
+    this.scorePlotLayout = {
+      ...this.plotLayoutBase,
+      title: 'Relative score',
+      yaxis: {
+        ...this.plotLayoutBase.yaxis,
+        title: 'Relative score'
+      }
+    }
   }
 
   ngOnInit() {

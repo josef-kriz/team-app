@@ -42,7 +42,7 @@ export class StatsService {
     )
   }
 
-  getPlotData(): Observable<any[]> {
+  getPlotData(metric: 'wins' | 'score'): Observable<any[]> {
     return combineLatest([from(db.rounds.toArray()), this.playerService.getPlayers()]).pipe(
       map(([rounds, players]) => {
         const preAcc = players.reduce((acc, player) => {
@@ -62,11 +62,13 @@ export class StatsService {
         return rounds.reduce((acc, round, i) => {
           if (round.scores) {
             Object.entries(round.scores).forEach(([playerId, playerStats]) => {
+              if (!acc[playerId]) return
+
               const score = Object.values(playerStats)[0]
 
               if (acc[playerId].x.length) {
                 acc[playerId].x.push(acc[playerId].x[acc[playerId].x.length - 1] + 1)
-                acc[playerId].y.push(acc[playerId].y[acc[playerId].y.length - 1] + score.wins)
+                acc[playerId].y.push(acc[playerId].y[acc[playerId].y.length - 1] + score[metric])
               } else {
                 acc[playerId].x.push(i + 1)
                 acc[playerId].y.push(score.wins)

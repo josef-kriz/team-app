@@ -13,7 +13,7 @@
         <span *ngIf="i === 0"> 🥇</span>
         <span *ngIf="i === 1"> 🥈</span>
         <span *ngIf="i === 2"> 🥉</span>
-        <span *ngIf="(i + 1 === playerStats?.length && playerStats?.length) || 0 > 2"> 🦙</span>
+        <span *ngIf="i + 1 === playerStats?.length && (playerStats?.length || 0) > 2"> 🦙</span>
       </td>
       <td>{{ playerStat.wins }}</td>
       <td>{{ playerStat.score }}</td>
@@ -22,4 +22,5 @@
   </tbody>
 </table>
 
-<plotly-plot [data]="graph.data" [layout]="graph.layout" [useResizeHandler]="true" divId="plot"> </plotly-plot>
+<plotly-plot [data]="winsData$ | async" [layout]="winsPlotLayout" [useResizeHandler]="true" divId="winsPlot"> </plotly-plot>
+<plotly-plot [data]="scoreData$ | async" [layout]="scorePlotLayout" [useResizeHandler]="true" divId="scorePlot"> </plotly-plot>
