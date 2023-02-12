@@ -1,8 +1,9 @@
 import { Component } from '@angular/core'
-import { map, Observable } from 'rxjs'
+import { first, map, Observable } from 'rxjs'
 import { Player } from '../../game/game.model'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { PlayerService } from '../../game/player.service'
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop'
 
 @Component({
   selector: 'app-players-page',
@@ -10,20 +11,29 @@ import { PlayerService } from '../../game/player.service'
   styleUrls: ['./players-page.component.css'],
 })
 export class PlayersPageComponent {
-  readonly activePlayers$: Observable<Player[]>
-  readonly inactivePlayers$: Observable<Player[]>
+  readonly players$: Observable<{ active: Player[]; inactive: Player[] }>
 
   constructor(private _snackBar: MatSnackBar, private playerService: PlayerService) {
-    this.activePlayers$ = this.playerService.getPlayers().pipe(map((player) => player.filter((p) => !!p.active)))
-    this.inactivePlayers$ = this.playerService.getPlayers().pipe(map((player) => player.filter((p) => !p.active)))
+    this.players$ = this.playerService.getPlayers().pipe(
+      first(), // otherwise items don't stay where dropped
+      map((players) => ({
+        active: players.filter((p) => !!p.active),
+        inactive: players.filter((p) => !p.active),
+      }))
+    )
   }
 
   trackById(_: number, player: Player): number {
     return player.id!
   }
 
-  toggleActiveness(player: Player) {
-    this.playerService.toggleActiveOnPlayer(player)
+  drop(event: CdkDragDrop<Player[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex)
+    } else {
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex)
+      this.playerService.toggleActiveOnPlayer(event.container.data[event.currentIndex])
+    }
   }
 
   addPlayer(nameField: HTMLInputElement): void {

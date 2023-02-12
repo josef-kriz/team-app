@@ -25,6 +25,7 @@ import * as PlotlyJS from 'plotly.js-dist-min'
 
 PlotlyModule.plotlyjs = PlotlyJS;
 import {MatMenuModule} from "@angular/material/menu";
+import { CdkDrag, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop'
 
 @NgModule({
   declarations: [
@@ -52,6 +53,9 @@ import {MatMenuModule} from "@angular/material/menu";
     MatSortModule,
     PlotlyModule,
     MatMenuModule,
+    CdkDropList,
+    CdkDrag,
+    CdkDropListGroup,
   ],
   providers: [],
   bootstrap: [AppComponent],

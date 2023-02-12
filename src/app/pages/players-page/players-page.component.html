@@ -1,44 +1,43 @@
 <mat-form-field class="input">
   <mat-label>Name</mat-label>
-  <input #nameInput matInput (keydown.enter)="addPlayer(nameInput)" />
+  <input #nameInput matInput (keydown.enter)="addPlayer(nameInput)"/>
 </mat-form-field>
 
 <button mat-raised-button color="primary" [disabled]="!nameInput.value" (click)="addPlayer(nameInput)">
   Add player
 </button>
-<br />
-<div class="section" *ngIf="activePlayers$ | async as activePlayers">
-  <h3>Active users</h3>
-  <mat-list *ngIf="activePlayers.length; else noPlayersActive">
-    <mat-list-item
-      class="item"
-      *ngFor="let player of activePlayers; trackBy: trackById"
-      (click)="toggleActiveness(player)"
-    >
+<br/>
+<br/>
+<div class="section" *ngIf="players$ | async as players" cdkDropListGroup>
+  <h2>Active users</h2>
+  <mat-list cdkDropList [cdkDropListData]="players.active" (cdkDropListDropped)="drop($event)">
+    <mat-list-item *ngFor="let player of players.active; trackBy: trackById" class="item" cdkDrag>
+      <h3>{{ player.name }}</h3>
       <button aria-label="Delete player" mat-icon-button (click)="deletePlayer(player)" matListItemMeta>
         <mat-icon>delete</mat-icon>
       </button>
-      <p>{{ player.name }}</p>
     </mat-list-item>
   </mat-list>
-  <ng-template #noPlayersActive>
-    <div>
-      <mat-card><mat-card-content>No players are currently active! </mat-card-content></mat-card>
-    </div>
-  </ng-template>
-</div>
-<div class="section" *ngIf="inactivePlayers$ | async as inactivePlayers">
-  <h3 *ngIf="inactivePlayers.length">Inactive users</h3>
-  <mat-list *ngIf="inactivePlayers.length">
-    <mat-list-item
-      class="item"
-      *ngFor="let inactivePlayer of inactivePlayers; trackBy: trackById"
-      (click)="toggleActiveness(inactivePlayer)"
-    >
+
+  <div>
+    <mat-card *ngIf="!players.active.length">
+      <mat-card-content>Drag & drop players here to make them active</mat-card-content>
+    </mat-card>
+  </div>
+
+  <h2>Inactive users</h2>
+  <mat-list cdkDropList [cdkDropListData]="players.inactive" (cdkDropListDropped)="drop($event)">
+    <mat-list-item *ngFor="let inactivePlayer of players.inactive; trackBy: trackById" class="item" cdkDrag>
+      <h3 matListItemTitle>{{ inactivePlayer.name }}</h3>
       <button aria-label="Delete player" mat-icon-button (click)="deletePlayer(inactivePlayer)" matListItemMeta>
         <mat-icon>delete</mat-icon>
       </button>
-      <p>{{ inactivePlayer.name }}</p>
     </mat-list-item>
   </mat-list>
+
+  <div class="empty-message">
+    <mat-card *ngIf="!players.inactive.length">
+      <mat-card-content>Drag & drop players here to make them inactive</mat-card-content>
+    </mat-card>
+  </div>
 </div>
