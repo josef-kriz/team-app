@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { db } from './database/db'
-import {firstValueFrom, from, map, Observable, switchMap, tap, throwError} from 'rxjs'
+import { firstValueFrom, from, map, Observable, switchMap, tap, throwError } from 'rxjs'
 import { Player, Round, RoundState, Scores, Table } from './game.model'
 import { conditionalLiveQuery } from '../helpers/functions'
 import { PlayerService } from './player.service'
@@ -16,6 +16,10 @@ export class GameService {
   }
 
   startRound(playersPerTeam: number = 2, tablesCount: number = 2): Observable<Round> {
+    if (playersPerTeam < 0) return throwError(() => new Error('At least one player per team is needed to start a round'))
+
+    if (tablesCount < 0) return throwError(() => new Error('At least one table is needed to start a round'))
+
     return from(
       db.transaction('rw', db.players, db.rounds, () =>
         firstValueFrom(
@@ -25,7 +29,7 @@ export class GameService {
             }),
             switchMap(() => this.playerService.getActivePlayers()),
             switchMap(async (players) => {
-              if (players.length < 1) throw new Error('At least one player has to be active.')
+              if (players.length < 2) throw new Error('At least 2 players must be active to start a round.')
 
               const shuffledPlayers = this.shuffleArray(players)
 
@@ -49,24 +53,7 @@ export class GameService {
 
               const whoPlayedWithWho = this.getWhoWasInATeamWithWhoHowManyTimes(players)
 
-              for (let i = 0, t = 0; i < shuffledPlayers.length; i += 2, t++) {
-                if (t === tablesCount) t = 0
-
-                // if this is the last player
-                if (!shuffledPlayers[i + 1]) {
-                  // if the last player would be the only one at the table
-                  if (tables[t].teams[0].players.length === 0) {
-                    tables.splice(t, 1)
-                    // if there is still room for a player at the previous table
-                    if (t > 1 && tables[t - 1].teams[1].players.length < playersPerTeam)
-                      tables[t - 1].teams[1].players.push(shuffledPlayers[i])
-                  }
-                  continue
-                }
-
-                tables[t].teams[0].players.push(shuffledPlayers[i])
-                tables[t].teams[1].players.push(shuffledPlayers[i + 1])
-              }
+              this.assignPlayers(tables, shuffledPlayers, tablesCount, playersPerTeam)
 
               const roundsCount = await db.rounds.count()
 
@@ -212,18 +199,18 @@ export class GameService {
     return conditionalLiveQuery(() => db.rounds.toArray())
   }
 
-  getWhoWasInATeamWithWhoHowManyTimes(players:Player[]) {
+  getWhoWasInATeamWithWhoHowManyTimes(players: Player[]) {
     const playersAndWhoTheyHavePlayedWith: { [name1: string]: { [playedWith: string]: number } } = {}
 
     return this.getRounds().pipe(
-      map(rounds => {
-        players.forEach(player=>{
+      map((rounds) => {
+        players.forEach((player) => {
           playersAndWhoTheyHavePlayedWith[player.name] = {}
         })
 
-        players.forEach((player)=>{
-          players.forEach((teamMate)=>{
-            if(player.id !== teamMate.id){
+        players.forEach((player) => {
+          players.forEach((teamMate) => {
+            if (player.id !== teamMate.id) {
               playersAndWhoTheyHavePlayedWith[player.name][teamMate.name] = 0
             }
           })
@@ -232,9 +219,9 @@ export class GameService {
         rounds.forEach((round) => {
           round.tables.forEach((table) => {
             table.teams.forEach((team) => {
-              team.players.forEach(player=>{
-                team.players.forEach(teamMate=>{
-                  if(teamMate.id !== player.id){
+              team.players.forEach((player) => {
+                team.players.forEach((teamMate) => {
+                  if (teamMate.id !== player.id) {
                     playersAndWhoTheyHavePlayedWith[player.name][teamMate.name]++
                   }
                 })
@@ -242,13 +229,13 @@ export class GameService {
             })
             const teamOne = table.teams[0]
             const teamTwo = table.teams[1]
-            teamOne.players.forEach(member=>{
-              teamTwo.players.forEach(rival=>{
+            teamOne.players.forEach((member) => {
+              teamTwo.players.forEach((rival) => {
                 playersAndWhoTheyHavePlayedWith[member.name][rival.name] += 0.5
               })
             })
-            teamTwo.players.forEach(member=>{
-              teamOne.players.forEach(rival=>{
+            teamTwo.players.forEach((member) => {
+              teamOne.players.forEach((rival) => {
                 playersAndWhoTheyHavePlayedWith[member.name][rival.name] += 0.5
               })
             })
@@ -276,5 +263,28 @@ export class GameService {
     }
 
     return players
+  }
+
+  private assignPlayers(tables: Table[], players: Player[], tablesCount: number, playersPerTeam: number): void {
+    for (let i = 0, t = 0; i < players.length; i += 2, t++) {
+      if (t === tablesCount) t = 0
+
+      if (tables[t].teams[0].players.length === playersPerTeam) break
+
+      // if this is the last player
+      if (!players[i + 1]) {
+        // if the last player would be the only one at the table
+        if (tables[t].teams[0].players.length === 0) {
+          tables.splice(t, 1)
+          // if there is still room for a player at the previous table
+          if (t > 1 && tables[t - 1].teams[1].players.length < playersPerTeam)
+            tables[t - 1].teams[1].players.push(players[i])
+        } else tables[t].teams[0].players.push(players[i])
+        continue
+      }
+
+      tables[t].teams[0].players.push(players[i])
+      tables[t].teams[1].players.push(players[i + 1])
+    }
   }
 }
