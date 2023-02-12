@@ -1,9 +1,11 @@
-
-
 .counter {
   margin: 15px 0;
 }
 .increment-button {
   margin: 0 5px;
   padding: 10px;
+}
+
+button{
+  margin-right:15px
 }
