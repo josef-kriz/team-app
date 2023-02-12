@@ -1,27 +1,30 @@
-<div id="app-wrapper">
-  <mat-toolbar>
-    <span>Team app</span>
-    <span class="spacer"></span>
-    <button mat-icon-button  aria-label="settings" [matMenuTriggerFor]="menu">
-      <mat-icon>settings</mat-icon>
+<mat-toolbar>
+  <span>Team app</span>
+  <span class="spacer"></span>
+  <button mat-icon-button aria-label="settings" [matMenuTriggerFor]="menu">
+    <mat-icon>settings</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="deleteAllRounds()">Delete All Rounds (Be careful!)</button>
+    <button mat-menu-item *ngIf="activeRound$ | async as activeRound" (click)="openReorderTeamsModal(activeRound)">
+      Reorder Players
     </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="deleteAllRounds()">Delete All Rounds (Be careful!)</button>
-      <button mat-menu-item *ngIf="activeRound$ | async as activeRound" (click)="openReorderTeamsModal(activeRound)">Reorder Players</button>
-    </mat-menu>
-  </mat-toolbar>
-  <mat-tab-nav-panel class="current-page-wrapper">
+  </mat-menu>
+</mat-toolbar>
+<nav mat-tab-nav-bar [backgroundColor]="'accent'" [tabPanel]="tabPanel">
+  <a
+    mat-tab-link
+    [routerLink]="link.address"
+    (click)="activeLink = link.address"
+    [active]="activeLink == link.address"
+    *ngFor="let link of links"
+    >{{ link.title }}</a
+  >
+</nav>
+<mat-tab-nav-panel #tabPanel>
+  <div class="current-page-wrapper">
     <router-outlet></router-outlet>
-  </mat-tab-nav-panel>
-  <nav mat-tab-nav-bar [backgroundColor]="'accent'" [tabPanel]="tabPanel">
-    <a
-      mat-tab-link
-      [routerLink]="link.address"
-      (click)="activeLink = link.address"
-      [active]="activeLink == link.address"
-      *ngFor="let link of links"
-      >{{ link.title }}</a
-    >
-  </nav>
-  <mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
-</div>
+    <!-- <br/> + &nbsp; prevents content from overflowing behind the menu. -->
+    <br /><br />&nbsp;
+  </div></mat-tab-nav-panel
+>
