@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { GameService } from '../../../game/game.service'
 import { Subscription } from 'rxjs'
 import { Player } from '../../../game/game.model'
@@ -10,21 +10,32 @@ import { PlayerService } from '../../../game/player.service'
   templateUrl: './start-new-round.component.html',
   styleUrls: ['./start-new-round.component.css'],
 })
-export class StartNewRoundComponent implements OnInit {
-  constructor(private _snackBar: MatSnackBar, private gameService: GameService, private playerService: PlayerService) {}
-
-  subscriptions: Subscription[] = []
+export class StartNewRoundComponent implements OnInit, OnDestroy {
   activePlayers: Player[] = []
   numberOfTables = { value: 1, plusDisabled: false }
   maxNumberPerTeam = { value: 1, plusDisabled: false }
+
+  private subscriptions: Subscription[] = []
+
+  constructor(private _snackBar: MatSnackBar, private gameService: GameService, private playerService: PlayerService) {}
 
   ngOnInit() {
     this.subscriptions.push(
       this.playerService.getActivePlayers().subscribe((players) => {
         this.activePlayers = players
         this.checkIfIncrementButtonsShouldBeDisabled()
+      }),
+      this.gameService.getLastRound().subscribe((lastRound) => {
+        if (lastRound) {
+          this.numberOfTables.value = lastRound.tables.length
+          this.maxNumberPerTeam.value = lastRound.tables[0].teams[0].players.length
+        }
       })
     )
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe())
   }
 
   changeNumberOfTables(number: number) {

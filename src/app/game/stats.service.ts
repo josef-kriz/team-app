@@ -26,6 +26,7 @@ export class StatsService {
               } else
                 acc[playerId] = {
                   ...score,
+                  score: score.score > 0 ? score.score : 0, // prevent starting with negative numbers
                   player: players.find((p) => p.id! === parseInt(playerId)) || {
                     id: Math.random(),
                     active: 0,
@@ -75,6 +76,7 @@ export class StatsService {
               }
             })
 
+            // if a player didn't play this round, create an entry and copy data from previous entry
             players.forEach((player) => {
               if (acc[player.id!].x.length !== i + 1) {
                 acc[player.id!].x.push(i + 1)

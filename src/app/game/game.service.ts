@@ -11,6 +11,10 @@ import { PlayerService } from './player.service'
 export class GameService {
   constructor(private playerService: PlayerService) {}
 
+  getLastRound(): Observable<Round | undefined> {
+    return conditionalLiveQuery(() => db.rounds.reverse().first())
+  }
+
   deleteAllRounds(): Observable<void> {
     return from(db.rounds.clear())
   }
@@ -35,6 +39,7 @@ export class GameService {
 
               const tables: Table[] = Array.from({ length: tablesCount }, (_, i) => ({
                 id: i,
+                name: `Table #${i + 1}`,
                 teams: [
                   {
                     name: `Team ${i + 1}-A`,

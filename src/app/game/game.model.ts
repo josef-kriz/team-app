@@ -19,6 +19,7 @@ export interface Round {
 
 export interface Table {
   id: number
+  name: string
   teams: [Team, Team]
 }
 
