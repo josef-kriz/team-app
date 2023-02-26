@@ -22,6 +22,14 @@ export class GameService {
       return db.rounds.delete(lastRound.id!)
     }))
   }
+  
+  deleteActiveRound(): Observable<void> {
+    return this.getActiveRound().pipe(switchMap(activeRound => {
+      if (!activeRound) return throwError(() => new Error('There is no active round to delete'))
+      
+      return db.rounds.delete(activeRound.id!)
+    }))
+  }
 
   deleteAllRounds(): Observable<void> {
     return from(db.rounds.clear())

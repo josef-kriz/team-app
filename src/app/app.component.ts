@@ -35,17 +35,19 @@ export class AppComponent {
   activeLink = '/current-round'
 
   deleteLastRound(): void {
-    this.gameService.deleteLastRound().subscribe({
-      next: () => {
-        this._snackBar.open('Round deleted', undefined, {
-          duration: 3000,
-        })
-      },
-      error: (error) =>
-        this._snackBar.open(error.message, undefined, {
-          duration: 3000,
-        }),
-    })
+    if (confirm('Are you sure to delete the last round?')) {
+      this.gameService.deleteActiveRound().subscribe({
+        next: () => {
+          this._snackBar.open('Round deleted', undefined, {
+            duration: 3000,
+          })
+        },
+        error: (error) =>
+          this._snackBar.open(error.message, undefined, {
+            duration: 3000,
+          }),
+      })
+    }
   }
 
   deleteAllRounds(): void {

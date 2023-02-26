@@ -3,5 +3,4 @@
   <app-result-input [round]="currentRound"></app-result-input>
 </ng-template>
 
-<button mat-raised-button color="accent" (click)="endRound()">End round</button>
-
+<button *ngIf="currentRound" mat-raised-button color="primary" id="end-round-button" (click)="endRound()">End round</button>
