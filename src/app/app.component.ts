@@ -13,7 +13,7 @@ import {MatDialog} from "@angular/material/dialog";
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  
+
   constructor(private router: Router, private gameService: GameService, private _snackBar: MatSnackBar, public dialog: MatDialog) {
     // @ts-ignore
     router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((event: NavigationStart) => {
@@ -29,8 +29,21 @@ export class AppComponent {
     { address: '/stats', title: 'Stats' },
   ]
   activeLink = '/current-round'
-  
-  
+
+  deleteLastRound(): void {
+    this.gameService.deleteLastRound().subscribe({
+      next: () => {
+        this._snackBar.open('Round deleted', undefined, {
+          duration: 3000,
+        })
+      },
+      error: (error) =>
+        this._snackBar.open(error.message, undefined, {
+          duration: 3000,
+        }),
+    })
+  }
+
   deleteAllRounds(): void {
     this.gameService.deleteAllRounds().subscribe({
       next: () => {
@@ -44,12 +57,12 @@ export class AppComponent {
         }),
     })
   }
-  
+
   openReorderTeamsModal(currentRound: Round) {
     const dialogRef = this.dialog.open(ReorderTeamsComponent, {
       data: currentRound,
     })
-    
+
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed')
       console.log(result)

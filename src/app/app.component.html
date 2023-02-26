@@ -5,10 +5,11 @@
     <mat-icon>settings</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="deleteAllRounds()">Delete All Rounds (Be careful!)</button>
     <button mat-menu-item *ngIf="activeRound$ | async as activeRound" (click)="openReorderTeamsModal(activeRound)">
       Reorder Players
     </button>
+    <button mat-menu-item (click)="deleteLastRound()">Delete Last Round</button>
+    <button mat-menu-item (click)="deleteAllRounds()">Delete All Rounds (Be careful!)</button>
   </mat-menu>
 </mat-toolbar>
 <nav mat-tab-nav-bar [backgroundColor]="'accent'" [tabPanel]="tabPanel">

@@ -15,6 +15,14 @@ export class GameService {
     return conditionalLiveQuery(() => db.rounds.reverse().first())
   }
 
+  deleteLastRound(): Observable<void> {
+    return from(db.rounds.toCollection().last()).pipe(switchMap(lastRound => {
+      if (!lastRound) return throwError(() => new Error('There is no round to delete'))
+
+      return db.rounds.delete(lastRound.id!)
+    }))
+  }
+
   deleteAllRounds(): Observable<void> {
     return from(db.rounds.clear())
   }

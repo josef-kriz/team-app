@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { first, map, Observable } from 'rxjs'
+import { map, Observable } from 'rxjs'
 import { Player } from '../../game/game.model'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { PlayerService } from '../../game/player.service'
@@ -15,7 +15,6 @@ export class PlayersPageComponent {
 
   constructor(private _snackBar: MatSnackBar, private playerService: PlayerService) {
     this.players$ = this.playerService.getPlayers().pipe(
-      first(), // otherwise items don't stay where dropped
       map((players) => ({
         active: players.filter((p) => !!p.active),
         inactive: players.filter((p) => !p.active),
