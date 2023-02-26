@@ -1,10 +1,44 @@
 .container {
   padding: 15px;
+  max-height: 70vh;
+  min-width: 70vw;
+}
+
+.tables-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .teams {
   display: flex;
   flex-direction: row;
+  width: 150px;
 }
 
+.team {
+  padding-right: 5px;
+}
 
+h3 {
+  margin: 0;
+}
+
+.table {
+  padding-right: 15px;
+}
+
+.table h2 {
+  text-align: center;
+}
+
+.team h3.right-team {
+  text-align: right;
+}
+
+.item {
+  background-color: gray;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}

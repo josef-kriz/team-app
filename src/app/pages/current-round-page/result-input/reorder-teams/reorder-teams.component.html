@@ -1,9 +1,9 @@
 <div class="container">
-  <div *ngIf="round; else error">
+  <div class="tables-container" *ngIf="round; else error">
     <div class="table" *ngFor="let table of round.tables">
-      <h2>{{ 'Table ' + table.id }}</h2>
+      <h2>{{ table.name }}</h2>
       <div class="teams">
-        <div class="team" *ngFor="let team of table.teams">
+        <div class="team" *ngFor="let team of table.teams; let i = index">
           <h3>{{ 'Team ' + team.id }}</h3>
           <mat-list>
             <mat-list-item
@@ -16,6 +16,20 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div *ngIf="activePlayersThatAreNotInCurrentRound.length">
+    <h2>Active players that are not playing</h2>
+    <mat-list *ngIf="activePlayersThatAreNotInCurrentRound.length">
+      <mat-list-item
+        (click)="selectPlayer(playerThatIsNotPlaying)"
+        class="item"
+        [style]="{ background: selectedPlayer?.id! === playerThatIsNotPlaying.id! ? 'green' : '' }"
+        *ngFor="let playerThatIsNotPlaying of activePlayersThatAreNotInCurrentRound"
+      >
+        <p>{{ playerThatIsNotPlaying.name }}</p>
+      </mat-list-item>
+    </mat-list>
   </div>
 </div>
 <ng-template #error><div>Error: No round was passed!</div></ng-template>
