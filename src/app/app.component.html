@@ -6,10 +6,17 @@
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item *ngIf="activeRound$ | async as activeRound" (click)="openReorderTeamsModal(activeRound)">
-      Reorder Players
+      <mat-icon>swap_horiz</mat-icon>
+      <span>Swap players</span>
     </button>
-    <button mat-menu-item (click)="deleteLastRound()">Delete Current Active Round</button>
-    <button mat-menu-item (click)="deleteAllRounds()">Delete All Rounds</button>
+    <button mat-menu-item (click)="deleteLastRound()">
+      <mat-icon>delete</mat-icon>
+      <span>Delete Current Active Round</span>
+    </button>
+    <button mat-menu-item (click)="deleteAllRounds()">
+      <mat-icon>delete_forever</mat-icon>
+      <span>Delete All Rounds</span>
+    </button>
   </mat-menu>
 </mat-toolbar>
 <nav mat-tab-nav-bar [backgroundColor]="'accent'" [tabPanel]="tabPanel">
