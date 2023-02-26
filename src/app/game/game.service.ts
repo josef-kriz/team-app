@@ -94,6 +94,10 @@ export class GameService {
   getActiveRound(): Observable<Round | undefined> {
     return conditionalLiveQuery(() => db.rounds.where('active').equals(RoundState.started).first())
   }
+  
+  getInactiveRounds(): Observable<Round | undefined> {
+    return conditionalLiveQuery(() => db.rounds.where('active').equals(RoundState.finished).first())
+  }
 
   swapPlayers(playerAId: number, playerBId: number): Observable<any> {
     return from(

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
 import { NavigationStart, Router } from '@angular/router'
-import { filter } from 'rxjs'
+import { filter, map } from 'rxjs'
 import { GameService } from './game/game.service'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { Round } from './game/game.model'
@@ -13,6 +13,12 @@ import { MatDialog } from '@angular/material/dialog'
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+  activeRound$ = this.gameService.getActiveRound()
+  title = 'team-app'
+
+  links: { address: string; title: string }[] = []
+  activeLink = '/current-round'
+
   constructor(
     private router: Router,
     private gameService: GameService,
@@ -23,16 +29,14 @@ export class AppComponent {
     router.events.pipe(filter((event) => event instanceof NavigationStart)).subscribe((event: NavigationStart) => {
       this.activeLink = event.url
     })
-  }
-  activeRound$ = this.gameService.getActiveRound()
-  title = 'team-app'
 
-  links = [
-    { address: '/current-round', title: 'Current Round' },
-    { address: '/players', title: 'Players' },
-    { address: '/stats', title: 'Stats' },
-  ]
-  activeLink = '/current-round'
+    this.gameService
+      .getInactiveRounds()
+      .pipe(map((inactiveRound) => !!inactiveRound))
+      .subscribe((inactiveRoundsExist) => {
+        this.setMenuOptions(inactiveRoundsExist)
+      })
+  }
 
   deleteLastRound(): void {
     if (confirm('Are you sure to delete the last round?')) {
@@ -72,5 +76,15 @@ export class AppComponent {
     })
 
     dialogRef.afterClosed().subscribe(() => {})
+  }
+
+  private setMenuOptions(statsVisible: boolean) {
+    this.links = [
+      { address: '/current-round', title: 'Current Round' },
+      { address: '/players', title: 'Players' },
+    ]
+    if (statsVisible) {
+      this.links.push({ address: '/stats', title: 'Stats' })
+    }
   }
 }
