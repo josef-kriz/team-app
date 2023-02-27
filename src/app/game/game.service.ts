@@ -16,19 +16,23 @@ export class GameService {
   }
 
   deleteLastRound(): Observable<void> {
-    return from(db.rounds.toCollection().last()).pipe(switchMap(lastRound => {
-      if (!lastRound) return throwError(() => new Error('There is no round to delete'))
+    return from(db.rounds.toCollection().last()).pipe(
+      switchMap((lastRound) => {
+        if (!lastRound) return throwError(() => new Error('There is no round to delete'))
 
-      return db.rounds.delete(lastRound.id!)
-    }))
+        return db.rounds.delete(lastRound.id!)
+      })
+    )
   }
-  
+
   deleteActiveRound(): Observable<void> {
-    return this.getActiveRound().pipe(switchMap(activeRound => {
-      if (!activeRound) return throwError(() => new Error('There is no active round to delete'))
-      
-      return db.rounds.delete(activeRound.id!)
-    }))
+    return this.getActiveRound().pipe(
+      switchMap((activeRound) => {
+        if (!activeRound) return throwError(() => new Error('There is no active round to delete'))
+
+        return db.rounds.delete(activeRound.id!)
+      })
+    )
   }
 
   deleteAllRounds(): Observable<void> {
@@ -94,7 +98,7 @@ export class GameService {
   getActiveRound(): Observable<Round | undefined> {
     return conditionalLiveQuery(() => db.rounds.where('active').equals(RoundState.started).first())
   }
-  
+
   getInactiveRounds(): Observable<Round | undefined> {
     return conditionalLiveQuery(() => db.rounds.where('active').equals(RoundState.finished).first())
   }
@@ -107,7 +111,7 @@ export class GameService {
             switchMap(([round, activePlayers]) => {
               if (!round) throw new Error('Cannot swap players, there is no active round')
 
-              let playerA, playerATableIndex: number, playerATeamIndex: number, playerAIndex: number
+              let playerA, playerATableIndex: number | undefined, playerATeamIndex: number | undefined, playerAIndex: number | undefined
               round.tables.some((table, i) =>
                 table.teams.some((team, j) =>
                   team.players.some((player, k) => {
@@ -123,7 +127,7 @@ export class GameService {
                 )
               )
 
-              let playerB, playerBTableIndex: number, playerBTeamIndex: number, playerBIndex: number
+              let playerB, playerBTableIndex: number| undefined, playerBTeamIndex: number|undefined, playerBIndex: number|undefined
               round.tables.some((table, i) =>
                 table.teams.some((team, j) =>
                   team.players.some((player, k) => {
@@ -150,22 +154,24 @@ export class GameService {
                   round.tables[playerATableIndex!].teams[playerATeamIndex!].players[playerAIndex!],
                 ]
               } else {
-                const playerInGameAorB: 'A' | 'B' | undefined = playerA ? 'A' : playerB ? 'B' : undefined
-                if (!playerInGameAorB) throw new Error('Neither of the players were found')
-                const inactivePlayerToBeSwapped =
-                  playerInGameAorB === 'A'
-                    ? activePlayers.find((ap) => ap.id === playerBId)
-                    : activePlayers.find((ap) => ap.id === playerAId)
-                const tableIndexOfPlayerInGame = playerA ? playerATableIndex! : playerBTableIndex!
-                const indexOfTeamOfPlayerInGame = playerA ? playerATeamIndex! : playerBTableIndex!
-                const indexPlayerInGame: number = playerAIndex! || playerBIndex!
-                if (inactivePlayerToBeSwapped) {
-                  round.tables[tableIndexOfPlayerInGame!].teams[indexOfTeamOfPlayerInGame!].players[
-                    indexPlayerInGame!
-                  ] = inactivePlayerToBeSwapped
-                } else throw new Error('Player outside of the round was not found.  ')
+                if (!playerA && !playerB) throw new Error('Neither of the players were found')
+                const inactivePlayerToBeSwapped = playerA
+                  ? activePlayers.find((ap) => ap.id === playerBId)
+                  : activePlayers.find((ap) => ap.id === playerAId)
+                const tableIndexOfPlayerInGame = playerATableIndex || playerBTableIndex
+                const indexOfTeamOfPlayerInGame = playerATeamIndex || playerBTeamIndex
+                const indexPlayerInGame = playerAIndex || playerBIndex
+                if (
+                  indexPlayerInGame === undefined ||
+                  indexOfTeamOfPlayerInGame === undefined ||
+                  tableIndexOfPlayerInGame === undefined
+                )
+                  throw new Error('Something went wrong.')
+                if (inactivePlayerToBeSwapped === undefined)
+                  throw new Error('Player outside of the current game not found')
+                round.tables[tableIndexOfPlayerInGame].teams[indexOfTeamOfPlayerInGame].players[indexPlayerInGame] =
+                  inactivePlayerToBeSwapped
               }
-
               return from(db.rounds.update(round, round))
             })
           )
@@ -286,7 +292,6 @@ export class GameService {
           })
         })
 
-        console.log(playersAndWhoTheyHavePlayedWith)
         return playersAndWhoTheyHavePlayedWith
       })
     )
