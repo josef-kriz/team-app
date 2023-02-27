@@ -5,31 +5,30 @@
     >
     <mat-card-content>
       <div class="result-inputs">
-        <mat-form-field>
-          <input
-            matInput
-            #inputOne
-            type="number"
-            min="0"
-            (input)="changeScore(table.id, inputOne.value, inputTwo.value)"
-            [value]="$any(table.teams[0].score)" /></mat-form-field
-        ><mat-form-field
-          ><input
-            matInput
-            #inputTwo
-            type="number"
-            min="0"
-            (input)="changeScore(table.id, inputOne.value, inputTwo.value)"
-            [value]="$any(table.teams[1].score)"
-        /></mat-form-field>
+        <input
+          matInput
+          #inputOne
+          type="number"
+          min="0"
+          (input)="changeScore(table.id, inputOne.value, inputTwo.value)"
+          [value]="$any(table.teams[0].score)"
+        />
+        <div class="delimiter">:</div>
+        <input
+          matInput
+          #inputTwo
+          type="number"
+          min="0"
+          (input)="changeScore(table.id, inputOne.value, inputTwo.value)"
+          [value]="$any(table.teams[1].score)"
+        />
       </div>
-      <div class="teamMembers">
+      <div class="team-members">
         <div class="team">
-          <div class="member" *ngFor="let player of table.teams[0].players">{{ player.name }}</div>
+          <div class="player" *ngFor="let player of table.teams[0].players">{{ player.name }}</div>
         </div>
-        <div class="versus">vs.</div>
         <div class="team right">
-          <div class="member" *ngFor="let player of table.teams[1].players">{{ player.name }}</div>
+          <div class="player" *ngFor="let player of table.teams[1].players">{{ player.name }}</div>
         </div>
       </div>
     </mat-card-content>
