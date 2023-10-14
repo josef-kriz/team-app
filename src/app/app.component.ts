@@ -17,7 +17,7 @@ export class AppComponent {
   title = 'team-app'
 
   links: { address: string; title: string }[] = []
-  activeLink = '/current-round'
+  activeLink = '/players'
 
   constructor(
     private router: Router,
