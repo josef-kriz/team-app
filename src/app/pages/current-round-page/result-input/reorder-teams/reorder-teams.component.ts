@@ -59,10 +59,12 @@ export class ReorderTeamsComponent implements OnInit{
           next: () =>
             this._snackBar.open(`Swapped ${selectedPlayer.name} with ${justSelectedPlayer.name}`, undefined, {
               duration: 3000,
+              verticalPosition: 'top',
             }),
           error: (error) =>
             this._snackBar.open(error.message, undefined, {
               duration: 3000,
+              verticalPosition: 'top',
             }),
           complete: () => this.dialogRef.close(),
         })

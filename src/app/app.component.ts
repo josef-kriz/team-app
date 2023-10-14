@@ -44,6 +44,7 @@ export class AppComponent {
         next: () => {
           this._snackBar.open('Round deleted', undefined, {
             duration: 3000,
+            verticalPosition: 'top',
           })
         },
         error: (error) =>
@@ -60,11 +61,13 @@ export class AppComponent {
         next: () => {
           this._snackBar.open('Rounds deleted', undefined, {
             duration: 3000,
+            verticalPosition: 'top',
           })
         },
         error: (error) =>
           this._snackBar.open(error.message, undefined, {
             duration: 3000,
+            verticalPosition: 'top',
           }),
       })
     }

@@ -41,11 +41,13 @@ export class PlayersPageComponent {
         nameField.value = ''
         this._snackBar.open('Player added', undefined, {
           duration: 3000,
+          verticalPosition: 'top',
         })
       },
       error: (error) =>
         this._snackBar.open(error.message, undefined, {
           duration: 3000,
+          verticalPosition: 'top',
         }),
     })
   }
@@ -55,11 +57,13 @@ export class PlayersPageComponent {
       next: () => {
         this._snackBar.open('Player deleted', undefined, {
           duration: 3000,
+          verticalPosition: 'top',
         })
       },
       error: (error) =>
         this._snackBar.open(error.message, undefined, {
           duration: 3000,
+          verticalPosition: 'top',
         }),
     })
   }

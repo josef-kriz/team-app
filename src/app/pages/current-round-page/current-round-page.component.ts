@@ -28,11 +28,13 @@ export class CurrentRoundPageComponent implements OnInit {
       next: () => {
         this._snackBar.open('Round ended', undefined, {
           duration: 3000,
+          verticalPosition: 'top',
         })
       },
       error: (error) =>
         this._snackBar.open(error.message, undefined, {
           duration: 3000,
+          verticalPosition: 'top',
         }),
     })
   }

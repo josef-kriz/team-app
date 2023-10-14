@@ -68,11 +68,13 @@ export class StartNewRoundComponent implements OnInit, OnDestroy {
       next: () => {
         this._snackBar.open('New round started!', undefined, {
           duration: 3000,
+          verticalPosition: 'top',
         })
       },
       error: (error) =>
         this._snackBar.open(error.message, undefined, {
           duration: 3000,
+          verticalPosition: 'top',
         }),
     })
   }
