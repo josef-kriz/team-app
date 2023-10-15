@@ -17,7 +17,7 @@ export class AppComponent {
   title = 'team-app'
 
   links: { address: string; title: string }[] = []
-  activeLink = '/current-round'
+  activeLink = '/players'
 
   constructor(
     private router: Router,
@@ -44,6 +44,7 @@ export class AppComponent {
         next: () => {
           this._snackBar.open('Round deleted', undefined, {
             duration: 3000,
+            verticalPosition: 'top',
           })
         },
         error: (error) =>
@@ -60,11 +61,13 @@ export class AppComponent {
         next: () => {
           this._snackBar.open('Rounds deleted', undefined, {
             duration: 3000,
+            verticalPosition: 'top',
           })
         },
         error: (error) =>
           this._snackBar.open(error.message, undefined, {
             duration: 3000,
+            verticalPosition: 'top',
           }),
       })
     }

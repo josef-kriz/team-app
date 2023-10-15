@@ -35,6 +35,10 @@ mat-card {
     margin-bottom: 16px;
 }
 
+.result-inputs input{
+    max-width: 100px;
+}
+
 .delimiter {
     font-size: 36px;
 }

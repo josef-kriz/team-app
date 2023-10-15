@@ -8,6 +8,8 @@ const routes: Routes = [
   { path: "players", component: PlayersPageComponent },
   { path: "stats", component: StatsPageComponent },
   { path: "current-round", component: CurrentRoundPageComponent },
+  //the empty path has to show something for Github Pages to work
+  // TODO: Maybe there is some redirecting available in pages to make this unnecessary
   { path: "**", component: PlayersPageComponent },
 ];
 
