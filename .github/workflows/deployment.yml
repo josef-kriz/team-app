@@ -1,7 +1,8 @@
 name: Build and Deploy
 on:
   push:
-    branches: ['test']
+    branches:
+      - master
 permissions:
   contents: write
 concurrency:
