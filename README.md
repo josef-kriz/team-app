@@ -1,5 +1,20 @@
 # TeamApp
 
+Developed by [Josef Kříž](https://github.com/josef-kriz/) and [Karel Čančara](https://github.com/kacan98) 
+this app allows you to split any number of people into randomly generated groups for a team-based activity (like pool or padel tennis).
+
+![The app used for the first time](readme%20first%20use%20picture.jpg)
+
+###### TeamApp used for the first time
+
+
+## Features
+- Add and remove players
+- Split players into random teams
+- Record points per team in each round
+- Display graphs of the points per player
+
+## Development 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.1.3.
 
 ## Development server
