@@ -1,8 +1,7 @@
 name: Build and Deploy
 on:
   push:
-    branches:
-      - master  
+    branches: ['test']
 permissions:
   contents: write
 concurrency:
@@ -29,5 +28,5 @@ jobs:
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        folder: www
+        folder: dist/team-app
         branch: gh-pages
