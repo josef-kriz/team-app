@@ -1,5 +1,7 @@
 # TeamApp
 
+([Try the app here](https://josef-kriz.github.io/team-app/))
+
 Developed by [Josef Kříž](https://github.com/josef-kriz/) and [Karel Čančara](https://github.com/kacan98) 
 this app allows you to split any number of people into randomly generated groups for a team-based activity (like pool or padel tennis).
 
